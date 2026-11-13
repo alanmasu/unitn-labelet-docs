@@ -16,6 +16,7 @@ Questa pagina elenca tutti i software del laboratorio, divisi per **provenienza*
     - [Software gia presenti nel sistema](#software-gia-presenti-nel-sistema)
     - [Pacchetti dei repository di Rocky](#pacchetti-dei-repository-di-rocky)
     - [GitHub CLI (gh)](#github-cli-gh)
+    - [X2Go server e desktop XFCE](#x2go-server-e-desktop-xfce)
   - [3. Software da Flatpak](#3-software-da-flatpak)
     - [KiCad](#kicad)
     - [Thonny](#thonny)
@@ -38,11 +39,12 @@ Questa pagina elenca tutti i software del laboratorio, divisi per **provenienza*
 | [Vivado / Vitis](#vivado-e-vitis-xilinx) | 2025.1 (anche 2021.2) | NFS da Zambesi | `/tools/Xilinx/` | `vivado`, `vitis` | |
 | [Cadence](#cadence) | 2024-25 | NFS da Jabba | `/eda/cadence/2024-25/` | `virtuoso`, … | |
 | [LibreOffice](#software-gia-presenti-nel-sistema) | da repository | già presente nell'immagine Rocky XFCE | sistema | `libreoffice` | |
-| [GTKWave](#pacchetti-dei-repository-di-rocky-ed-epel) | da repository | dnf | sistema | `gtkwave` | |
-| [gcc, g++, make, …](#pacchetti-dei-repository-di-rocky-ed-epel) | da repository | dnf (gruppo "Development Tools") | sistema | `gcc`, `g++` | |
+| [GTKWave](#pacchetti-dei-repository-di-rocky) | da repository | dnf | sistema | `gtkwave` | |
+| [gcc, g++, make, …](#pacchetti-dei-repository-di-rocky) | da repository | dnf (gruppo "Development Tools") | sistema | `gcc`, `g++` | |
 | [Python 3](#software-gia-presenti-nel-sistema) | 3.9 | già presente nell'immagine Rocky XFCE | sistema | `python3` | |
 | [git](#software-gia-presenti-nel-sistema) | da repository | già presente nell'immagine Rocky XFCE | sistema | `git` | |
-| [X2Go Client](#pacchetti-dei-repository-di-rocky-ed-epel) | 4.1.2.3 | dnf (EPEL) | sistema | `x2goclient` | |
+| [X2Go Client](#pacchetti-dei-repository-di-rocky) | 4.1.2.3 | dnf (EPEL) | sistema | `x2goclient` | |
+| [X2Go Server](#x2go-server-e-desktop-xfce) | da repository | dnf (EPEL) | sistema | – | per usare i PC da remoto |
 | [GitHub CLI](#github-cli-gh) | da repository | dnf (repository GitHub) | sistema | `gh` | |
 | [KiCad](#kicad) | 9 (canale stable) | Flatpak (Flathub) | Flatpak + `/opt/kicad-9.0.5/` | `kicad-9.0.5` | |
 | [Thonny](#thonny) | da Flathub | Flatpak (Flathub) | Flatpak + `/opt/thonny/` | `thonny` | |
@@ -171,6 +173,33 @@ sudo dnf -y install gh
 ```
 
 Nel 2026 GitHub ha cambiato la chiave GPG del repository. Il playbook Ansible `update.yml` riscrive il file `/etc/yum.repos.d/gh-cli.repo` con la nuova chiave (vedi il [repository Ansible](https://github.com/alanmasu/unitn-labelet-ansible/tree/main)).
+
+### X2Go server e desktop XFCE
+
+X2Go permette di usare il desktop dei PC da remoto. Comandi eseguiti:
+
+```bash
+sudo dnf update
+sudo dnf install epel-release
+sudo dnf groupinstall "xfce"
+sudo dnf install lightdm
+sudo dnf config-manager --set-enabled crb
+sudo dnf -y update
+sudo dnf install x2goserver x2goserver-xsession
+```
+
+Nelle note originali c'erano anche questi comandi, **ma non sono stati eseguiti**:
+
+- `dnf config-manager --set-enabled powertools`
+- `dnf copr enable stenstorp/lightdm`
+
+**Compositing di XFCE disattivato**: il compositing del window manager di XFCE (xfwm4) dà problemi nelle sessioni X2Go. Per questo è stato disattivato per tutti i nuovi utenti con il file:
+
+```
+/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+```
+
+È una copia del file standard di XFCE. L'unica differenza è che l'opzione `use_compositing` è disattivata (`false`).
 
 ---
 

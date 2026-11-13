@@ -20,9 +20,9 @@ Tutti i PC hanno la stessa configurazione.
 
 | Pagina | Cosa contiene |
 |---|---|
+| [Configurazione di sistema](configurazione-sistema.md) | Installazione del sistema operativo, partizioni, SSH, X2Go, regole udev, script di avvio |
 | [Server e dischi di rete](infrastruttura.md) | Server usati dal laboratorio, mount NFS, server delle licenze, home di ateneo |
 | [Software](software.md) | Elenco di tutti i software: da dove arrivano, come si installano, come si avviano |
-| [Configurazione di sistema](configurazione-sistema.md) | Installazione del sistema operativo, partizioni, SSH, X2Go, regole udev, script di avvio |
 | [Manutenzione](manutenzione.md) | Link al repository Ansible e ultimo deploy, lavori da fare, storico delle modifiche |
 
 ## Convenzioni usate
