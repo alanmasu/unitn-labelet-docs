@@ -5,30 +5,31 @@
 Questa pagina elenca tutti i software del laboratorio, divisi per **provenienza**, cioè da dove arrivano e come si installano.
 
 ## Indice
-
-- [Riepilogo](#riepilogo)
-- [Prerequisiti comuni (EPEL, CRB, Flatpak)](#prerequisiti-comuni-epel-crb-flatpak)
-- [1. Software da server di rete](#1-software-da-server-di-rete)
-  - [Vivado e Vitis (Xilinx)](#vivado-e-vitis-xilinx)
-  - [Cadence](#cadence)
-- [2. Software da repository dnf](#2-software-da-repository-dnf)
-  - [Software gia presenti nel sistema](#software-gia-presenti-nel-sistema)
-  - [Pacchetti dei repository di Rocky ed EPEL](#pacchetti-dei-repository-di-rocky-ed-epel)
-  - [GitHub CLI (gh)](#github-cli-gh)
-- [3. Software da Flatpak](#3-software-da-flatpak)
-  - [KiCad](#kicad)
-  - [Thonny](#thonny)
-- [4. Pacchetti rpm scaricati dal sito](#4-pacchetti-rpm-scaricati-dal-sito)
-  - [VS Code](#vs-code)
-  - [WaveForms e Adept Runtime (Digilent)](#waveforms-e-adept-runtime-digilent)
-- [5. Software in /opt](#5-software-in-opt)
-  - [Arduino IDE 1.8.19](#arduino-ide-1819)
-  - [Arduino IDE 2.3.6](#arduino-ide-236)
-  - [Logic 2 (Saleae)](#logic-2-saleae)
-  - [GIMP](#gimp)
-  - [PulseView (sigrok)](#pulseview-sigrok)
-  - [GHDL](#ghdl)
-- [Software provati e scartati](#software-provati-e-scartati)
+- [Software](#software)
+  - [Indice](#indice)
+  - [Riepilogo](#riepilogo)
+  - [Prerequisiti comuni (EPEL, CRB, Flatpak)](#prerequisiti-comuni-epel-crb-flatpak)
+  - [1. Software da server di rete](#1-software-da-server-di-rete)
+    - [Vivado e Vitis (Xilinx)](#vivado-e-vitis-xilinx)
+    - [Cadence](#cadence)
+  - [2. Software da repository dnf](#2-software-da-repository-dnf)
+    - [Software gia presenti nel sistema](#software-gia-presenti-nel-sistema)
+    - [Pacchetti dei repository di Rocky](#pacchetti-dei-repository-di-rocky)
+    - [GitHub CLI (gh)](#github-cli-gh)
+  - [3. Software da Flatpak](#3-software-da-flatpak)
+    - [KiCad](#kicad)
+    - [Thonny](#thonny)
+  - [4. Pacchetti rpm scaricati dal sito](#4-pacchetti-rpm-scaricati-dal-sito)
+    - [VS Code](#vs-code)
+    - [WaveForms e Adept Runtime (Digilent)](#waveforms-e-adept-runtime-digilent)
+  - [5. Software in /opt](#5-software-in-opt)
+    - [Arduino IDE 1.8.19](#arduino-ide-1819)
+    - [Arduino IDE 2.3.6](#arduino-ide-236)
+    - [Logic 2 (Saleae)](#logic-2-saleae)
+    - [GIMP](#gimp)
+    - [PulseView (sigrok)](#pulseview-sigrok)
+    - [GHDL](#ghdl)
+  - [Software provati e scartati](#software-provati-e-scartati)
 
 ## Riepilogo
 
@@ -84,27 +85,28 @@ Il software non è installato sui PC ma sta su un server e arriva con NFS (vedi 
 
 - **Provenienza**: `/tools` da `zambesi.disi.unitn.it` (vedi [Zambesi](infrastruttura.md#zambesi--tools-xilinx)).
 - **Versione in uso**: 2025.1, in `/tools/Xilinx/2025.1/`.
-- **Versione vecchia**: 2021.2, ancora sul server ma oggi complicata da usare.
+- **Versione vecchia**: 2021.2, ancora sul server ma oggi complicata da usare con questa configurazione.
 
-**Ambiente**: lo script `/etc/profile.d/xilinx.sh` carica i file `settings64.sh` di Vivado e Vitis 2025.1. Lo script è gestito con Ansible (vedi [Script in /etc/profile.d](configurazione-sistema.md#script-in-etcprofiled)).
+**Ambiente**: lo script `/etc/profile.d/xilinx.sh` carica i file `settings64.sh` di Vivado e Vitis 2025.1. Lo script è gestito con Ansible dal 11/11/2026 (vedi [Script in /etc/profile.d](configurazione-sistema.md#script-in-etcprofiled)).
 
 **Driver dei cavi JTAG**: vanno installati in locale su ogni PC, come root.
 
+Per la versione 2025.1:
 ```bash
-cd <cartella di Vivado>/data/xicom/cable_drivers/lin64/install_script/install_drivers/
+cd /tools/Xilinx/2025.1/Vivado/data/xicom/cable_drivers/lin64/install_script/install_drivers/
 sudo ./install_drivers.sh
 ```
 
-- Per la 2021.2 la cartella era `/tools/Xilinx/Vivado/2021.2/`.
-- Per la 2025.1 non è documentato se i driver sono stati reinstallati.
+Per la versione 2021.2:
+```bash
+cd /tools/Xilinx/Vivado/2021.2/data/xicom/cable_drivers/lin64/install_script/install_drivers/
+sudo ./install_drivers.sh
+```
 
-**Libreria `libtinfo.so.5`**: per la 2021.2 è stato creato questo link:
-
+**Libreria `libtinfo.so.5`**:
 ```bash
 sudo ln -s /usr/lib64/libtinfo.so.6 /usr/lib64/libtinfo.so.5
 ```
-
-Non è stato verificato se serve ancora con la 2025.1.
 
 ### Cadence
 
@@ -130,7 +132,7 @@ sudo dnf install xorg-x11-server-Xvfb
 
 Nota: il link `libz.so → libz.so.1` in `/usr/lib64` esisteva già, quindi non è stato creato.
 
-**Ambiente**: lo script `/etc/profile.d/cadence.sh` carica gli script dei vari strumenti e imposta `CDSHOME` e `LM_LICENSE_FILE`. Parte solo se `/eda` è montato. Crea anche due alias per il PDK:
+**Ambiente**: lo script `/etc/profile.d/cadence.sh` carica gli script dei vari strumenti e imposta `CDSHOME` e `LM_LICENSE_FILE` (Gestito con Ansible dal 11/11/2026). Parte solo se `/eda` è montato. Crea anche due alias per il PDK:
 
 | Alias | A cosa serve |
 |---|---|
@@ -145,13 +147,13 @@ Questi software si aggiornano insieme al sistema con `dnf update`.
 
 ### Software gia presenti nel sistema
 
-Questi programmi erano già nell'immagine di installazione di Rocky Linux XFCE, insieme ai programmi standard del desktop. Non è servito installarli:
+Questi programmi erano già nell'immagine di installazione di Rocky Linux, insieme ai programmi standard del desktop. Non è servito installarli:
 
 - **LibreOffice**
 - **Python 3** (versione 3.9)
 - **git**
 
-### Pacchetti dei repository di Rocky ed EPEL
+### Pacchetti dei repository di Rocky
 
 ```bash
 sudo dnf install gtkwave
@@ -193,8 +195,6 @@ flatpak run org.kicad.KiCad//stable
 sudo chmod +x /opt/kicad-9.0.5/bin/kicad-9.0.5
 sudo ln -s /opt/kicad-9.0.5/bin/kicad-9.0.5 /usr/bin/kicad-9.0.5
 ```
-
-Nota: lo script usa il canale `stable` di Flatpak. Dopo un aggiornamento la versione reale può essere diversa da 9.0.5, anche se il nome dello script resta `kicad-9.0.5`.
 
 ### Thonny
 
@@ -241,8 +241,6 @@ Fonte: [guida di installazione Digilent per Linux](https://digilent.com/referenc
 2. Installare **Adept Runtime**.
 3. Installare **WaveForms**.
 
-Versioni e file scaricati non sono documentati.
-
 ---
 
 ## 5. Software in /opt
@@ -268,11 +266,10 @@ Nel file `.desktop` si modificano questi campi:
 
 ```
 Icon=/opt/arduino-1.8.19/lib/arduino.png
-Exec=/opt/arduino-1.8.19/arduino
+Exec=/opt/arduino-1.8.19/arduino %U
 ```
 
-> Nota: nel log originale i due percorsi erano scritti senza la `/` iniziale (`opt/...`). Se l'icona non funziona, controllare questo.
-
+Creato il link in `/usr/local/share/applications/`:
 ```bash
 sudo ln -s /opt/arduino-1.8.19/arduino-1.8.19.desktop /usr/local/share/applications/arduino-1.8.19.desktop
 ```
@@ -300,8 +297,6 @@ Categories=Development;
 sudo ln -s /opt/arduino-2.3.6/arduino-2.3.6.desktop /usr/local/share/applications/arduino-2.3.6.desktop
 ```
 
-Per la 2.3.6 non è documentato un comando da terminale (nessun link in `/usr/bin/`).
-
 Per le regole udev delle schede Arduino vedi [Regole udev](configurazione-sistema.md#regole-udev).
 
 ### Logic 2 (Saleae)
@@ -326,7 +321,7 @@ sudo chmod +x /opt/logic-2.4.36/bin/logic-2.4.36
 sudo ln -s /opt/logic-2.4.36/bin/logic-2.4.36 /usr/bin/logic-2.4.36
 ```
 
-**Accesso USB**: al primo avvio l'app mostra un comando che abilita la regola udev per l'analizzatore. Quel comando è stato eseguito, ma la regola creata non è documentata.
+**Accesso USB**: al primo avvio l'app mostra un comando che abilita la regola udev per l'analizzatore. 
 
 **Manca il file `.desktop`** (vedi [Lavori da fare](manutenzione.md#lavori-da-fare)).
 
